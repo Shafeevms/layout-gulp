@@ -5,6 +5,9 @@ const htmlMin = require('gulp-htmlmin');
 const sourcemaps = require('gulp-sourcemaps');
 const autoprefixer = require('gulp-autoprefixer');
 const cleanCSS = require('gulp-clean-css');
+const uglify = require('gulp-uglify-es').default;
+const babel = require('gulp-babel');
+const notify = require('gulp-notify');
 const browserSync = require('browser-sync').create();
 
 sass.compiler = require('node-sass');
@@ -18,6 +21,16 @@ const css = () => {
   .pipe(cleanCSS({level: 2}))
   .pipe(sourcemaps.write())
   .pipe(dest('dist'));
+};
+
+const scripts = () => {
+  return src('src/*.js')
+    .pipe(babel({
+      presets: ['babel/env']
+    }))
+    .pipe(uglify().on('error', notify.onError()))
+    .pipe(dest('dist'))
+    .pipe(browserSync.stream())
 };
 
 const minify = () => {
@@ -34,6 +47,7 @@ const watchFiles = () => {
   })
 };
 
-watch('src/**/*.html');
-watch('src/scss/**/*.scss');
-exports.default = series(minify, css);
+watch('src/**/*.html', minify);
+watch('src/scss/**/*.scss', css);
+watch('src/*.js', scripts);
+exports.default = series(minify, css, scripts, watchFiles);
