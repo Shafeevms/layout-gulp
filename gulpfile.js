@@ -26,7 +26,7 @@ const css = () => {
 const scripts = () => {
   return src('src/*.js')
     .pipe(babel({
-      presets: ['babel/env']
+      presets: ['@babel/env']
     }))
     .pipe(uglify().on('error', notify.onError()))
     .pipe(dest('dist'))

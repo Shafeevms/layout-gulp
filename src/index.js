@@ -1,6 +1,5 @@
-import './scss/styles.scss';
 import Swiper from 'swiper';
-import 'swiper/swiper-bundle.css';
+
 
 const swiper = new Swiper('.about-us__swiper_info', {
   // Optional parameters
