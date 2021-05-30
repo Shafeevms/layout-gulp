@@ -12,23 +12,29 @@ const browserSync = require('browser-sync').create();
 
 sass.compiler = require('node-sass');
 
+const resources = () => {
+  return src('./src/img/**')
+    .pipe(dest('./dist/img'))
+}
 
 const css = () => {
- return src('./src/**/*.scss')
-  .pipe(sourcemaps.init())
-  .pipe(sass().on('error', sass.logError))
-  .pipe(autoprefixer({cascade: false}))
-  .pipe(cleanCSS({level: 2}))
-  .pipe(sourcemaps.write())
-  .pipe(dest('dist'));
+  return src('./src/**/*.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(autoprefixer({ cascade: false }))
+    .pipe(cleanCSS({ level: 2 }))
+    .pipe(sourcemaps.write())
+    .pipe(dest('dist'));
 };
 
 const scripts = () => {
   return src('src/*.js')
+    .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['@babel/env']
     }))
     .pipe(uglify().on('error', notify.onError()))
+    .pipe(sourcemaps.write())
     .pipe(dest('dist'))
     .pipe(browserSync.stream())
 };
@@ -50,4 +56,5 @@ const watchFiles = () => {
 watch('src/**/*.html', minify);
 watch('src/scss/**/*.scss', css);
 watch('src/*.js', scripts);
-exports.default = series(minify, css, scripts, watchFiles);
+watch('src/img', resources);
+exports.default = series(resources, minify, css, scripts, watchFiles);
