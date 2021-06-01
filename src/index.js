@@ -1,6 +1,3 @@
-import Swiper from 'swiper';
-
-
 const swiper = new Swiper('.about-us__swiper_info', {
   // Optional parameters
   direction: 'horizontal',
@@ -17,7 +14,7 @@ const swiper = new Swiper('.about-us__swiper_info', {
 const swiperImg = new Swiper('.about-us__swiper_pictures', {
   direction: 'horizontal',
   loop: true,
-  speed: 300,
+  speed: 1000,
   autoplay: {
     delay: 500,
   },

@@ -28,7 +28,11 @@ const css = () => {
 };
 
 const scripts = () => {
-  return src('src/*.js')
+  return src([
+    './src/vendor/swiper.js',
+    'src/*.js'
+  ])
+    .pipe(concat('app.js'))
     .pipe(sourcemaps.init())
     .pipe(babel({
       presets: ['@babel/env']
