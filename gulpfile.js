@@ -27,6 +27,14 @@ const css = () => {
     .pipe(dest('dist'));
 };
 
+const cssBuild = () => {
+  return src('./src/**/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(autoprefixer({ cascade: false }))
+    .pipe(cleanCSS({ level: 2 }))
+    .pipe(dest('dist'));
+};
+
 const scripts = () => {
   return src([
     './src/vendor/swiper.js',
@@ -41,6 +49,18 @@ const scripts = () => {
     .pipe(sourcemaps.write())
     .pipe(dest('dist'))
     .pipe(browserSync.stream())
+};
+const scriptsBuild = () => {
+  return src([
+    './src/vendor/swiper.js',
+    'src/*.js'
+  ])
+    .pipe(concat('app.js'))
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
+    .pipe(uglify().on('error', notify.onError()))
+    .pipe(dest('dist'))
 };
 
 const minify = () => {
@@ -62,3 +82,4 @@ watch('src/scss/**/*.scss', css);
 watch('src/*.js', scripts);
 watch('src/img', resources);
 exports.default = series(resources, minify, css, scripts, watchFiles);
+exports.build = series(resources, cssBuild, scriptsBuild, minify);
